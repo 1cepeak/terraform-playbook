@@ -26,6 +26,11 @@ jobs:
         if: github.event_name == 'pull_request'
         run: terraform fmt -check
 
+      - name: Echo variables
+        run: |
+          echo "PM_API_TOKEN_ID: ${{ secrets.PM_API_TOKEN_ID }}"
+          echo "PM_API_TOKEN_SECRET: ${{ secrets.PM_API_TOKEN_SECRET }}"
+
       - name: Plan
         run: terraform plan -input=false
         env:
