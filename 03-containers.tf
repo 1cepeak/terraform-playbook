@@ -9,9 +9,9 @@ locals {
 }
 
 resource "proxmox_lxc" "terraform_test" {
-  hostname        = "terraformtest"
-  hastate         = "started"
-  unprivileged    = true
+  hostname     = "terraformtest"
+  hastate      = "started"
+  unprivileged = true
 
   target_node     = local.MAIN_NODE
   ostemplate      = local.OS_TEMPLATE_PATH
