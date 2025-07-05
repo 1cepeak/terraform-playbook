@@ -1,26 +1,33 @@
+locals {
+  MAIN_NODE        = "pve"
+  OS_TEMPLATE_PATH = "local:vztmpl/almalinux-9-default_20240911_amd64.tar.xz"
+  ROOTFS_STORAGE   = "local-lvm"
+  NETWORK_NAME     = "eth0"
+  NETWORK_BRIDGE   = "vmbr0"
+  NETWORK_IP       = "dhcp"
+  NETWORK_IP6      = "dhcp"
+}
+
 resource "proxmox_lxc" "terraform_test" {
-  target_node     = "pve"
   hostname        = "terraformtest"
-  ostemplate      = local.OS_TEMPLATE_PATH
+  hastate         = "started"
   unprivileged    = true
+
+  target_node     = local.MAIN_NODE
+  ostemplate      = local.OS_TEMPLATE_PATH
   ssh_public_keys = <<-EOT
     ${var.SSH_PUBLIC_KEY}
   EOT
-  hastate         = "started"
-
-  features {
-    nesting = true
-  }
 
   rootfs {
-    storage = "local-lvm"
-    size    = "10G"
+    size    = "2G"
+    storage = local.ROOTFS_STORAGE
   }
 
   network {
-    name   = "eth0"
-    bridge = "vmbr0"
-    ip     = "dhcp"
-    ip6    = "dhcp"
+    name   = local.NETWORK_NAME
+    bridge = local.NETWORK_BRIDGE
+    ip     = local.NETWORK_IP
+    ip6    = local.NETWORK_IP6
   }
 }
