@@ -10,5 +10,6 @@ terraform {
     bucket                      = "terraform"
     key                         = "state/terraform.tfstate"
     encrypt                     = true
+    use_path_style              = true
   }
 }
