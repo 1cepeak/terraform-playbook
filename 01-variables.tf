@@ -10,16 +10,6 @@ variable "PM_API_TOKEN_SECRET" {
   sensitive   = true
 }
 
-variable "S3_ACCESS_KEY" {
-  type        = string
-  description = "S3 access key"
-}
-
-variable "S3_SECRET_KEY" {
-  type        = string
-  description = "S3 secret key"
-}
-
 variable "SSH_PUBLIC_KEY" {
   type        = string
   description = "SSH public key for the server"

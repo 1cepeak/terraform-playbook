@@ -1,4 +1,5 @@
 # Terraform
+backend.conf
 **/.terraform
 *.tfstate
 *.tfstate.*
