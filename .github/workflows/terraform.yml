@@ -17,10 +17,7 @@ jobs:
         uses: hashicorp/setup-terraform@v1
 
       - name: Init
-        run: |
-          echo "access_key = \"${{ secrets.S3_ACCESS_KEY }}\"" > backend.conf
-          echo "secret_key = \"${{ secrets.S3_SECRET_KEY }}\"" >> backend.conf
-          terraform init -backend-config=backend.conf
+        run: terraform init -backend-config "access_key=${{ secrets.S3_ACCESS_KEY }}" -backend-config "secret_key=${{ secrets.S3_SECRET_KEY }}"
 
       - name: Validate
         run: terraform validate
@@ -30,7 +27,7 @@ jobs:
         run: terraform fmt -check
 
       - name: Plan
-        run: terraform plan -input=false -backend-config=backend.conf
+        run: terraform plan -input=false
         env:
           TF_VAR_PM_API_TOKEN_ID: ${{ secrets.PM_API_TOKEN_ID }}
           TF_VAR_PM_API_TOKEN_SECRET: ${{ secrets.PM_API_TOKEN_SECRET }}
@@ -38,7 +35,7 @@ jobs:
 
       - name: Apply
         if: github.ref == 'refs/heads/main' && github.event_name == 'push'
-        run: terraform apply -auto-approve -input=false -backend-config=backend.conf
+        run: terraform apply -auto-approve -input=false
         env:
           TF_VAR_PM_API_TOKEN_ID: ${{ secrets.PM_API_TOKEN_ID }}
           TF_VAR_PM_API_TOKEN_SECRET: ${{ secrets.PM_API_TOKEN_SECRET }}
