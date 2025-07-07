@@ -8,8 +8,8 @@ locals {
   NETWORK_IP6      = "dhcp"
 }
 
-# resource "proxmox_lxc" "terraform_test" {
-#   hostname     = "terraformtest"
+# resource "proxmox_lxc" "example-container" {
+#   hostname     = "example-container"
 #   hastate      = "started"
 #   unprivileged = true
 
