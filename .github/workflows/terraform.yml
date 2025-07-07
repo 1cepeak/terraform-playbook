@@ -31,6 +31,8 @@ jobs:
           TF_VAR_PM_API_TOKEN_ID: ${{ secrets.PM_API_TOKEN_ID }}
           TF_VAR_PM_API_TOKEN_SECRET: ${{ secrets.PM_API_TOKEN_SECRET }}
           TF_VAR_SSH_PUBLIC_KEY: ${{ secrets.SSH_PUBLIC_KEY }}
+          TF_VAR_VM_USER_NAME: ${{ secrets.VM_USER_NAME }}
+          TF_VAR_VM_USER_PASSWORD: ${{ secrets.VM_USER_PASSWORD }}
 
       - name: Apply
         if: github.ref == 'refs/heads/main' && github.event_name == 'push'
@@ -39,3 +41,5 @@ jobs:
           TF_VAR_PM_API_TOKEN_ID: ${{ secrets.PM_API_TOKEN_ID }}
           TF_VAR_PM_API_TOKEN_SECRET: ${{ secrets.PM_API_TOKEN_SECRET }}
           TF_VAR_SSH_PUBLIC_KEY: ${{ secrets.SSH_PUBLIC_KEY }}
+          TF_VAR_VM_USER_NAME: ${{ secrets.VM_USER_NAME }}
+          TF_VAR_VM_USER_PASSWORD: ${{ secrets.VM_USER_PASSWORD }}
