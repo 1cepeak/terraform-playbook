@@ -1,27 +1,17 @@
-locals {
-  MAIN_NODE        = "pve"
-  OS_TEMPLATE_PATH = "local:vztmpl/almalinux-9-default_20240911_amd64.tar.xz"
-  ROOTFS_STORAGE   = "local-lvm"
-  NETWORK_NAME     = "eth0"
-  NETWORK_BRIDGE   = "vmbr0"
-  NETWORK_IP       = "dhcp"
-  NETWORK_IP6      = "dhcp"
-}
-
 # resource "proxmox_lxc" "example-container" {
 #   hostname     = "example-container"
-#   hastate      = "started"
+#   start        = true
 #   unprivileged = true
 
 #   target_node     = local.MAIN_NODE
-#   ostemplate      = local.OS_TEMPLATE_PATH
+#   ostemplate      = local.LXC_OS_TEMPLATE_PATH
 #   ssh_public_keys = <<-EOT
 #     ${var.SSH_PUBLIC_KEY}
 #   EOT
 
 #   rootfs {
-#     size    = "2G"
 #     storage = local.ROOTFS_STORAGE
+#     size    = "2G"
 #   }
 
 #   network {
