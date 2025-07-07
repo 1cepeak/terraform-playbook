@@ -12,7 +12,7 @@ resource "proxmox_vm_qemu" "vm-example" {
   automatic_reboot = true
 
   # Cloud-Init configuration
-  cicustom   = "vendor=local:snippets/qemu-guest-agent.yml"
+  cicustom = "vendor=local:snippets/qemu-guest-agent.yml"
   # nameserver = "1.1.1.1 8.8.8.8"
   ipconfig0  = "ip=192.168.3.70/24,gw=192.168.3.1,ip6=dhcp"
   ciuser     = var.VM_USER_NAME
