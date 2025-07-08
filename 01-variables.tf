@@ -1,10 +1,10 @@
 locals {
-  MAIN_NODE            = "pve"
-  ROOTFS_STORAGE       = "local-lvm"
+  MAIN_NODE        = "pve"
+  ROOTFS_STORAGE   = "local-lvm"
   OS_TEMPLATE_PATH = "local:vztmpl/almalinux-9-default_20240911_amd64.tar.xz"
-  VM_OS_TEMPLATE       = "almalinux9-cloudinit"
-  NETWORK_NAME         = "eth0"
-  NETWORK_BRIDGE       = "vmbr0"
+  VM_OS_TEMPLATE   = "almalinux9-cloudinit"
+  NETWORK_NAME     = "eth0"
+  NETWORK_BRIDGE   = "vmbr0"
 }
 
 variable "PM_API_TOKEN_ID" {
