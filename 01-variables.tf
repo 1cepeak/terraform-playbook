@@ -1,12 +1,10 @@
 locals {
   MAIN_NODE            = "pve"
   ROOTFS_STORAGE       = "local-lvm"
-  LXC_OS_TEMPLATE_PATH = "local:vztmpl/almalinux-9-default_20240911_amd64.tar.xz"
+  OS_TEMPLATE_PATH = "local:vztmpl/almalinux-9-default_20240911_amd64.tar.xz"
   VM_OS_TEMPLATE       = "almalinux9-cloudinit"
   NETWORK_NAME         = "eth0"
   NETWORK_BRIDGE       = "vmbr0"
-  NETWORK_IP           = "dhcp"
-  NETWORK_IP6          = "dhcp"
 }
 
 variable "PM_API_TOKEN_ID" {
