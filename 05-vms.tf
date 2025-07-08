@@ -1,6 +1,5 @@
-resource "proxmox_vm_qemu" "vm-example" {
-  vmid             = 100
-  name             = "vm-example"
+resource "proxmox_vm_qemu" "vm_example" {
+  name             = "vm_example"
   target_node      = local.MAIN_NODE
   agent            = 1
   cores            = 2
