@@ -1,5 +1,5 @@
 resource "proxmox_vm_qemu" "vm_example" {
-  name             = "vm_example"
+  name             = "vm-example"
   target_node      = local.MAIN_NODE
   agent            = 1
   cores            = 2
@@ -18,18 +18,26 @@ resource "proxmox_vm_qemu" "vm_example" {
   cipassword = var.VM_USER_PASSWORD
   sshkeys    = var.SSH_PUBLIC_KEY
 
-  serial {
-    id   = 0
-    type = "std"
-  }
-
-  disk {
-    type    = "scsi"
-    storage = local.ROOTFS_STORAGE
-    size    = "32G"
+  disks {
+    scsi {
+      scsi0 {
+        disk {
+          storage = local.ROOTFS_STORAGE
+          size    = "2G"
+        }
+      }
+    }
+    ide {
+      ide1 {
+        cloudinit {
+          storage = local.ROOTFS_STORAGE
+        }
+      }
+    }
   }
 
   network {
+    id     = 0
     bridge = local.NETWORK_BRIDGE
     model  = "virtio"
   }
