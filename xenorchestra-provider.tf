@@ -2,7 +2,7 @@
 terraform {
   required_providers {
     xenorchestra = {
-      source  = "vatesfr/xenorchestra"
+      source = "vatesfr/xenorchestra"
     }
   }
 }
