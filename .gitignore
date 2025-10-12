@@ -3,7 +3,6 @@
 *.tfstate
 *.tfstate.*
 *.plan
-.terraform.lock.hcl
 
 .DS_Store
 .history
