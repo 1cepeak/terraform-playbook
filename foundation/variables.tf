@@ -1,50 +1,50 @@
 # Proxmox
 
 variable "PROXMOX_ENDPOINT" {
-  type = string
+  type        = string
   description = "Proxmox VE endpoint URL"
-  sensitive = true
+  sensitive   = true
 }
 
 variable "PROXMOX_USER" {
-  type = string
+  type        = string
   description = "Proxmox VE PAM user without realm"
-  default = "terraform"
+  default     = "terraform"
 }
 
 variable "PROXMOX_API_TOKEN_ID" {
-  type = string
+  type        = string
   description = "Proxmox VE API token ID"
-  sensitive = true
+  sensitive   = true
 }
 
 variable "PROXMOX_API_TOKEN_SECRET" {
-  type = string
+  type        = string
   description = "Proxmox VE API token secret"
-  sensitive = true
+  sensitive   = true
 }
 
 variable "PROXMOX_NODE" {
-  type = string
+  type        = string
   description = "Proxmox VE node name"
-  default = "pve"
+  default     = "pve"
 }
 
 variable "PROXMOX_PRIVATE_KEY_PATH" {
-  type = string
+  type        = string
   description = "Path to the SSH private key used to access Proxmox VE"
-  default = "~/.ssh/proxmox"
+  default     = "~/.ssh/proxmox"
 }
 
 # Minio
 
 variable "MINIO_USER" {
-  type = string
+  type        = string
   description = "MinIO root user"
-  default = "admin"
+  default     = "admin"
 }
 
 variable "MINIO_BUCKETS" {
-  type = list(string)
+  type        = list(string)
   description = "MinIO default buckets"
 }

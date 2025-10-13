@@ -1,10 +1,10 @@
 resource "random_password" "minio_container" {
-  length = 20
+  length  = 20
   special = false
 }
 
 resource "random_password" "minio_admin" {
-  length = 20
+  length  = 20
   special = false
 }
 
