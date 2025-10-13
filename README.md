@@ -2,11 +2,4 @@
 
 # terraform-playbook
 
-Описание инфраструктуры (IaC) с помощью Terraform для серверов управляемых XCP-ng.
-
-## Env Variables
-
-```bash
-export XOA_URL="ws://your_xen_orchestra_remote_address"
-export XOA_TOKEN="token_for_xen_orchestra"
-```
+Описание инфраструктуры (IaC) с помощью Terraform для серверов управляемых Proxmox VE.
