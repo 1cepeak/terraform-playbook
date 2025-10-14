@@ -1,0 +1,70 @@
+name: 'Terraform'
+
+on:
+  push:
+    branches: ["main"]
+  pull_request:
+
+permissions:
+  contents: read
+
+jobs:
+  terraform:
+    name: 'Terraform'
+    runs-on: ubuntu-latest
+    environment: production
+
+    # Use the Bash shell regardless whether the GitHub Actions runner is ubuntu-latest, macos-latest, or windows-latest
+    defaults:
+      run:
+        shell: bash
+
+    steps:
+    # Checkout the repository to the GitHub Actions runner
+    - name: Checkout
+      uses: actions/checkout@v4
+
+    # Install the latest version of Terraform CLI
+    - name: Setup Terraform
+      uses: hashicorp/setup-terraform@v1
+
+    # Create configration files for Terraform
+    - name: Create configs
+      run: |
+        echo <<-EOL
+          PROXMOX_ENDPOINT         = "${{ secrets.PROXMOX_ENDPOINT }}"
+          PROXMOX_NODE             = "${{ secrets.PROXMOX_NODE }}"
+          PROXMOX_USER             = "${{ secrets.PROXMOX_USER }}"
+          PROXMOX_API_TOKEN_ID     = "${{ secrets.PROXMOX_API_TOKEN_ID }}"
+          PROXMOX_API_TOKEN_SECRET = "${{ secrets.PROXMOX_API_TOKEN_SECRET }}"
+          PROXMOX_PRIVATE_KEY_PATH = "${{ secrets.PROXMOX_PRIVATE_KEY_PATH }}"
+
+          MINIO_USER    = "${{ secrets.MINIO_USER }}"
+          MINIO_BUCKETS = ${{ secrets.MINIO_BUCKETS }}
+        EOL >> core/terraform.tfvars
+        echo <<-EOL
+          endpoints = {
+            s3 = "${{ secrets.MINIO_ENDPOINT }}"
+          }
+
+          access_key = "${{ secrets.MINIO_USER }}"
+          secret_key = "${{ secrets.MINIO_SECRET_KEY }}"
+        EOL >> core/state.config
+
+    # Checks that all Terraform configuration files adhere to a canonical format
+    - name: Terraform Format
+      run: terraform fmt -check
+
+    # Initialize a new or existing Terraform working directory by creating initial files, loading any remote state, downloading modules, etc.
+    - name: Terraform Init
+      run: terraform init -backend-config=state.config
+
+    # Generates an execution plan for Terraform
+    - name: Terraform Plan
+      run: terraform plan -input=false
+
+    # On push to "main", build or change infrastructure according to Terraform configuration files
+    # Note: It is recommended to set up a required "strict" status check in your repository for "Terraform Cloud". See the documentation on "strict" required status checks for more information: https://help.github.com/en/github/administering-a-repository/types-of-required-status-checks
+    - name: Terraform Apply
+      if: github.ref == 'refs/heads/"main"' && github.event_name == 'push'
+      run: terraform apply -auto-approve -input=false
