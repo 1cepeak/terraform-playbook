@@ -1,4 +1,4 @@
-PROXMOX_ENDPOINT         = "https://192.168.3.67:8006"
+PROXMOX_ENDPOINT         = "https://127.0.0.1:8006"
 PROXMOX_NODE             = "pve"
 PROXMOX_USER             = "terraform"
 PROXMOX_API_TOKEN_ID     = "your_token_id"
