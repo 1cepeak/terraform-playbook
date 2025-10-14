@@ -1,0 +1,63 @@
+name: 'Terraform'
+
+on:
+  push:
+    branches: ["main"]
+  pull_request:
+
+permissions:
+  contents: read
+
+jobs:
+  terraform:
+    name: 'Terraform'
+    runs-on: ubuntu-latest
+    environment: production
+
+    # Use the Bash shell regardless whether the GitHub Actions runner is ubuntu-latest, macos-latest, or windows-latest
+    defaults:
+      run:
+        shell: bash
+
+    steps:
+    # Checkout the repository to the GitHub Actions runner
+    - name: Checkout
+      uses: actions/checkout@v4
+
+    # Install the latest version of Terraform CLI
+    - name: Setup Terraform
+      uses: hashicorp/setup-terraform@v1
+
+    # Create configration files for Terraform
+    - name: Create configs
+      run: |
+        cd core
+        echo 'PROXMOX_ENDPOINT         = "${{ secrets.PROXMOX_ENDPOINT }}"' >> terraform.tfvars
+        echo 'PROXMOX_NODE             = "${{ secrets.PROXMOX_NODE }}"' >> terraform.tfvars
+        echo 'PROXMOX_USER             = "${{ secrets.PROXMOX_USER }}"' >> terraform.tfvars
+        echo 'PROXMOX_API_TOKEN_ID     = "${{ secrets.PROXMOX_API_TOKEN_ID }}"' >> terraform.tfvars
+        echo 'PROXMOX_API_TOKEN_SECRET = "${{ secrets.PROXMOX_API_TOKEN_SECRET }}"' >> terraform.tfvars
+        echo 'PROXMOX_PRIVATE_KEY_PATH = "${{ secrets.PROXMOX_PRIVATE_KEY_PATH }}"' >> terraform.tfvars
+        echo 'MINIO_USER               = "${{ secrets.MINIO_USER }}"' >> terraform.tfvars
+        echo 'MINIO_BUCKETS            = ${{ secrets.MINIO_BUCKETS }}' >> terraform.tfvars
+        echo 'endpoints = { s3 = "${{ secrets.MINIO_ENDPOINT }}" }' >> state.config
+        echo 'access_key = "${{ secrets.MINIO_USER }}"' >> state.config
+        echo 'secret_key = "${{ secrets.MINIO_SECRET_KEY }}"' >> state.config
+
+    # Checks that all Terraform configuration files adhere to a canonical format
+    - name: Terraform Lint
+      run: terraform -chdir=core fmt -check
+
+    # Initialize a new or existing Terraform working directory by creating initial files, loading any remote state, downloading modules, etc.
+    - name: Terraform Init
+      run: terraform -chdir=core init -backend-config=state.config
+
+    # Generates an execution plan for Terraform
+    - name: Terraform Plan
+      run: terraform -chdir=core plan -input=false
+
+    # On push to "main", build or change infrastructure according to Terraform configuration files
+    # Note: It is recommended to set up a required "strict" status check in your repository for "Terraform Cloud". See the documentation on "strict" required status checks for more information: https://help.github.com/en/github/administering-a-repository/types-of-required-status-checks
+    - name: Terraform Apply
+      if: github.ref == 'refs/heads/"main"' && github.event_name == 'push'
+      run: terraform -chdir=core apply -auto-approve -input=false
