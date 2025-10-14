@@ -3,6 +3,8 @@
 *.tfstate
 *.tfstate.*
 *.plan
+*.tfvars
+state.config
 
 .DS_Store
 .history
