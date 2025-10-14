@@ -22,12 +22,24 @@ terraform {
       version = "~> 2.5.3"
     }
   }
+
+  backend "s3" {
+    skip_credentials_validation = true
+    skip_region_validation      = true
+    skip_metadata_api_check     = true
+    skip_requesting_account_id  = true
+    use_path_style              = true
+    insecure                    = true
+    bucket                      = "terraform"
+    key                         = "state/core/terraform.tfstate"
+    region                      = "eu-east-1"
+  }
 }
 
 provider "proxmox" {
   endpoint  = var.PROXMOX_ENDPOINT
   insecure  = true
-  api_token = "${var.PROXMOX_USER}@pam!${var.PROXMOX_API_TOKEN_ID}=${var.PROMOX_API_TOKEN_SECRET}"
+  api_token = "${var.PROXMOX_USER}@pam!${var.PROXMOX_API_TOKEN_ID}=${var.PROXMOX_API_TOKEN_SECRET}"
 
   ssh {
     agent       = false
