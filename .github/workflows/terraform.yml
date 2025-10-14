@@ -31,28 +31,21 @@ jobs:
     # Create configration files for Terraform
     - name: Create configs
       run: |
-        echo <<-EOL
-          PROXMOX_ENDPOINT         = "${{ secrets.PROXMOX_ENDPOINT }}"
-          PROXMOX_NODE             = "${{ secrets.PROXMOX_NODE }}"
-          PROXMOX_USER             = "${{ secrets.PROXMOX_USER }}"
-          PROXMOX_API_TOKEN_ID     = "${{ secrets.PROXMOX_API_TOKEN_ID }}"
-          PROXMOX_API_TOKEN_SECRET = "${{ secrets.PROXMOX_API_TOKEN_SECRET }}"
-          PROXMOX_PRIVATE_KEY_PATH = "${{ secrets.PROXMOX_PRIVATE_KEY_PATH }}"
-
-          MINIO_USER    = "${{ secrets.MINIO_USER }}"
-          MINIO_BUCKETS = ${{ secrets.MINIO_BUCKETS }}
-        EOL >> core/terraform.tfvars
-        echo <<-EOL
-          endpoints = {
-            s3 = "${{ secrets.MINIO_ENDPOINT }}"
-          }
-
-          access_key = "${{ secrets.MINIO_USER }}"
-          secret_key = "${{ secrets.MINIO_SECRET_KEY }}"
-        EOL >> core/state.config
+        cd core
+        echo 'PROXMOX_ENDPOINT         = "${{ secrets.PROXMOX_ENDPOINT }}"' >> terraform.tfvars
+        echo 'PROXMOX_NODE             = "${{ secrets.PROXMOX_NODE }}"' >> terraform.tfvars
+        echo 'PROXMOX_USER             = "${{ secrets.PROXMOX_USER }}"' >> terraform.tfvars
+        echo 'PROXMOX_API_TOKEN_ID     = "${{ secrets.PROXMOX_API_TOKEN_ID }}"' >> terraform.tfvars
+        echo 'PROXMOX_API_TOKEN_SECRET = "${{ secrets.PROXMOX_API_TOKEN_SECRET }}"' >> terraform.tfvars
+        echo 'PROXMOX_PRIVATE_KEY_PATH = "${{ secrets.PROXMOX_PRIVATE_KEY_PATH }}"' >> terraform.tfvars
+        echo 'MINIO_USER               = "${{ secrets.MINIO_USER }}"' >> terraform.tfvars
+        echo 'MINIO_BUCKETS            = ${{ secrets.MINIO_BUCKETS }}' >> terraform.tfvars
+        echo 'endpoints = { s3 = "${{ secrets.MINIO_ENDPOINT }}" }' >> state.config
+        echo 'access_key = "${{ secrets.MINIO_USER }}"' >> state.config
+        echo 'secret_key = "${{ secrets.MINIO_SECRET_KEY }}"' >> state.config
 
     # Checks that all Terraform configuration files adhere to a canonical format
-    - name: Terraform Format
+    - name: Terraform Lint
       run: terraform fmt -check
 
     # Initialize a new or existing Terraform working directory by creating initial files, loading any remote state, downloading modules, etc.
