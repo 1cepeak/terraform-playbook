@@ -188,7 +188,7 @@ resource "proxmox_virtual_environment_container" "nginx" {
 
   provisioner "file" {
     destination = "/etc/nginx/sites-available/${local.domain}"
-    content = <<-EOF
+    content     = <<-EOF
     server {
       listen 80;
 
