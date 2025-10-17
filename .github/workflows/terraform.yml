@@ -40,14 +40,15 @@ jobs:
         echo 'PROXMOX_PRIVATE_KEY_PATH = "${{ secrets.PROXMOX_PRIVATE_KEY_PATH }}"' >> terraform.tfvars
         echo 'MINIO_USER               = "${{ secrets.MINIO_USER }}"' >> terraform.tfvars
         echo 'MINIO_BUCKETS            = ${{ secrets.MINIO_BUCKETS }}' >> terraform.tfvars
-        echo 'endpoints = { s3 = "${{ secrets.MINIO_ENDPOINT }}" }' >> state.config
-        echo 'access_key = "${{ secrets.MINIO_USER }}"' >> s3-backend.config
-        echo 'secret_key = "${{ secrets.MINIO_SECRET_KEY }}"' >> s3-backend.config
+        echo 'endpoints                   = { s3 = "${{ secrets.MINIO_ENDPOINT }}" }' >> s3-backend.config
+        echo 'access_key                  = "${{ secrets.MINIO_USER }}"' >> s3-backend.config
+        echo 'secret_key                  = "${{ secrets.MINIO_SECRET_KEY }}"' >> s3-backend.config
         echo 'skip_credentials_validation = true' >> s3-backend.config
         echo 'skip_region_validation      = true' >> s3-backend.config
         echo 'skip_metadata_api_check     = true' >> s3-backend.config
         echo 'skip_requesting_account_id  = true' >> s3-backend.config
         echo 'use_path_style              = true' >> s3-backend.config
+        echo 'insecure                    = true' >> s3-backend.config
         echo 'bucket                      = "terraform"' >> s3-backend.config
         echo 'key                         = "state/core/terraform.tfstate"' >> s3-backend.config
         echo 'region                      = "eu-east-1"' >> s3-backend.config
