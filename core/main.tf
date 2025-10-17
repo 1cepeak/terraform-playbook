@@ -1,3 +1,16 @@
+# Common
+
+resource "proxmox_virtual_environment_download_file" "ubuntu_24_04_vztmpl" {
+  content_type = "vztmpl"
+  datastore_id = "local"
+  node_name    = var.PROXMOX_NODE
+  url          = "http://download.proxmox.com/images/system/ubuntu-24.04-standard_24.04-2_amd64.tar.zst"
+}
+
+resource "tls_private_key" "core_container" {
+  algorithm = "ED25519"
+}
+
 # MinIO
 
 resource "random_password" "minio_container" {
@@ -10,27 +23,12 @@ resource "random_password" "minio_admin" {
   special = false
 }
 
-resource "tls_private_key" "minio_container" {
-  algorithm = "ED25519"
-}
-
-resource "proxmox_virtual_environment_download_file" "ubuntu_24_04_vztmpl" {
-  content_type = "vztmpl"
-  datastore_id = "local"
-  node_name    = var.PROXMOX_NODE
-  url          = "http://download.proxmox.com/images/system/ubuntu-24.04-standard_24.04-2_amd64.tar.zst"
-}
-
 resource "proxmox_virtual_environment_container" "minio" {
   node_name     = var.PROXMOX_NODE
   vm_id         = 101
   tags          = ["core"]
   start_on_boot = true
   unprivileged  = true
-
-  features {
-    nesting = true
-  }
 
   cpu {
     cores = 2
@@ -72,7 +70,7 @@ resource "proxmox_virtual_environment_container" "minio" {
     }
 
     user_account {
-      keys     = [trimspace(tls_private_key.minio_container.public_key_openssh)]
+      keys     = [trimspace(tls_private_key.core_container.public_key_openssh)]
       password = random_password.minio_container.result
     }
   }
@@ -81,7 +79,7 @@ resource "proxmox_virtual_environment_container" "minio" {
     agent       = false
     type        = "ssh"
     user        = "root"
-    private_key = trimspace(tls_private_key.minio_container.private_key_openssh)
+    private_key = trimspace(tls_private_key.core_container.private_key_openssh)
     host        = "192.168.3.100"
   }
 
@@ -111,17 +109,9 @@ resource "proxmox_virtual_environment_container" "minio" {
 
 # Nginx
 
-locals {
-  domain = "1cepeak-shelter.ru"
-}
-
 resource "random_password" "nginx_container" {
   length  = 20
   special = false
-}
-
-resource "tls_private_key" "nginx_container" {
-  algorithm = "ED25519"
 }
 
 resource "proxmox_virtual_environment_container" "nginx" {
@@ -132,11 +122,11 @@ resource "proxmox_virtual_environment_container" "nginx" {
   unprivileged  = true
 
   cpu {
-    cores = 4
+    cores = 2
   }
 
   memory {
-    dedicated = 4096
+    dedicated = 2048
   }
 
   network_interface {
@@ -164,7 +154,7 @@ resource "proxmox_virtual_environment_container" "nginx" {
     }
 
     user_account {
-      keys     = [trimspace(tls_private_key.nginx_container.public_key_openssh)]
+      keys     = [trimspace(tls_private_key.core_container.public_key_openssh)]
       password = random_password.nginx_container.result
     }
   }
@@ -173,7 +163,7 @@ resource "proxmox_virtual_environment_container" "nginx" {
     agent       = false
     type        = "ssh"
     user        = "root"
-    private_key = trimspace(tls_private_key.nginx_container.private_key_openssh)
+    private_key = trimspace(tls_private_key.core_container.private_key_openssh)
     host        = "192.168.3.101"
   }
 
@@ -186,42 +176,7 @@ resource "proxmox_virtual_environment_container" "nginx" {
     inline = ["sh /root/install_nginx.sh"]
   }
 
-  provisioner "file" {
-    destination = "/etc/nginx/sites-available/${local.domain}"
-    content     = <<-EOF
-    server {
-      listen 80;
-
-      server_name ${local.domain} www.${local.domain};
-
-      # Redirect all HTTP connections to HTTPS
-      return 301 https://$host$request_uri;
-    }
-
-    server {
-      listen 443 ssl;
-
-      ssl_certificate /etc/nginx/ssl/nginx-selfsigned.crt;
-      ssl_certificate_key /etc/nginx/ssl/nginx-selfsigned.key;
-      ssl_protocols TLSv1.2 TLSv1.3;
-      ssl_ciphers HIGH:!aNULL:!MD5;
-
-      server_name ${local.domain} www.${local.domain};
-
-      root /var/www/${local.domain}/html;
-      index index.html;
-
-      location / {
-        try_files $uri $uri/ =404;
-      }
-    }
-    EOF
-  }
-
-  provisioner "remote-exec" {
-    inline = [
-      "ln -s /etc/nginx/sites-available/${local.domain} /etc/nginx/sites-enabled/${local.domain}",
-      "systemctl restart nginx"
-    ]
+  lifecycle {
+    prevent_destroy = true
   }
 }

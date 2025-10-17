@@ -1,3 +1,8 @@
+output "CORE_CONTAINER_PRIVATE_KEY" {
+  value     = tls_private_key.core_container.private_key_openssh
+  sensitive = true
+}
+
 output "MINIO_CONTAINER_PASSWORD" {
   value     = random_password.minio_container.result
   sensitive = true

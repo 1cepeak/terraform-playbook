@@ -1,6 +1,0 @@
-endpoints = {
-  s3 = "http://127.0.0.1:9000"
-}
-
-access_key = "your_access_key"
-secret_key = "your_secret_key"

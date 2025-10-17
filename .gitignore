@@ -4,7 +4,8 @@
 *.tfstate.*
 *.plan
 *.tfvars
-state.config
+s3-backend.config
+core_container_private_key
 
 .DS_Store
 .history

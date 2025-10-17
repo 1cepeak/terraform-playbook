@@ -22,7 +22,7 @@
 ## Инициализация Terraform
 
 Чтобы иницализировать Terraform CLI, предварительно создайте 2 конфигурационных файла:
-- `core/state.config` - настройки подключения к s3 backend для сохранения `terraform.tfstate`
+- `core/s3-backend.config` - настройки подключения к s3 backend для сохранения `terraform.tfstate`
 - `core/terraform.tfvars` - остальные настройки
 
 Так же, в директории `core/` примеры файлов конфигурации.
@@ -43,7 +43,7 @@ MINIO_USER    = "minio_user"
 MINIO_BUCKETS = ["terraform"]
 ```
 
-#### Пример `core/state.config`:
+#### Пример `core/s3-backend.config`:
 
 ```ini
 endpoints = {
@@ -52,12 +52,22 @@ endpoints = {
 
 access_key = "your_access_key"
 secret_key = "your_secret_key"
+
+skip_credentials_validation = true
+skip_region_validation      = true
+skip_metadata_api_check     = true
+skip_requesting_account_id  = true
+use_path_style              = true
+insecure                    = true
+bucket                      = "terraform"
+key                         = "state/terraform.tfstate"
+region                      = "eu-east-1"
 ```
 
 После создания всех необходимых конфигурационных файлов, запустите команду инициализации Terraform CLI.
 
 ```shell
-terraform init -backend-config=core/state.config
+terraform init -backend-config=core/s3-backend.config
 ```
 
 ## Использование
