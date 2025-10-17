@@ -52,16 +52,6 @@ endpoints = {
 
 access_key = "your_access_key"
 secret_key = "your_secret_key"
-
-skip_credentials_validation = true
-skip_region_validation      = true
-skip_metadata_api_check     = true
-skip_requesting_account_id  = true
-use_path_style              = true
-insecure                    = true
-bucket                      = "terraform"
-key                         = "state/terraform.tfstate"
-region                      = "eu-east-1"
 ```
 
 После создания всех необходимых конфигурационных файлов, запустите команду инициализации Terraform CLI.
