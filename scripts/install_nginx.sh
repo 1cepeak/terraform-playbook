@@ -17,7 +17,7 @@ cat > $SITES_AVAILABLE_DIR/$DOMAIN <<EOF
 server {
   listen 80;
 
-  server_name $DOMAIN s3.$DOMAIN;
+  server_name $DOMAIN www.$DOMAIN;
 
   # Redirect all HTTP connections to HTTPS
   return 301 https://\$host\$request_uri;
@@ -38,29 +38,6 @@ server {
 
   location / {
     try_files \$uri \$uri/ =404;
-  }
-}
-
-server {
-  listen 443 ssl;
-
-  ssl_certificate $SSL_DIR/nginx-selfsigned.crt;
-  ssl_certificate_key $SSL_DIR/nginx-selfsigned.key;
-  ssl_protocols TLSv1.2 TLSv1.3;
-  ssl_ciphers HIGH:!aNULL:!MD5;
-
-  server_name s3.$DOMAIN;
-
-  location / {
-    proxy_pass http://192.168.3.100:9000;
-
-    proxy_set_header Host \$host;
-    proxy_set_header X-Real-IP \$remote_addr;
-
-    proxy_buffers 16 4k;
-    proxy_buffer_size 2k;
-
-    proxy_redirect off;
   }
 }
 EOF

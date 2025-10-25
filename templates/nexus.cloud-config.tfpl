@@ -1,0 +1,55 @@
+#cloud-config
+hostname: nexus
+password: ${password}
+chpasswd:
+  expire: false
+groups:
+  - ${group}
+users:
+  - default
+  - name: ${user}
+    system: true
+    shell: /usr/bin/nologin
+    primary_group: ${group}
+ssh_pwauth: true
+ssh_authorized_keys:
+  - ${ssh_public_key}
+package_update: true
+package_upgrade: true
+packages:
+  - qemu-guest-agent
+  - wget
+write_files:
+  - path: /etc/systemd/system/nexus.service
+    owner: 'root:root'
+    permissions: '0600'
+    content: |
+      [Unit]
+      Description=Sonatype Nexus Service
+      After=network.target
+
+      [Service]
+      Type=forking
+      LimitNOFILE=65536
+      ExecStart=${install_dir}/nexus/bin/nexus run
+      ExecStop=${install_dir}/nexus/bin/nexus stop
+
+      User=nexus
+      Restart=on-abort
+      TimeoutSec=600
+
+      [Install]
+      WantedBy=multi-user.target
+runcmd:
+  - systemctl enable --now qemu-guest-agent
+  - mkdir ${install_dir}
+  - wget https://download.sonatype.com/nexus/3/nexus-3.85.0-03-linux-x86_64.tar.gz
+  - tar xvz --keep-directory-symlink -f ./nexus-3.85.0-03-linux-x86_64.tar.gz
+  - mv nexus-3.85.0-03 ${install_dir}/nexus
+  - mv sonatype-work ${install_dir}/sonatype-work
+  - echo 'run_as_user="${user}"' >> ${install_dir}/nexus/bin/nexus.rc
+  - chmod +x ${install_dir}/nexus/bin/nexus
+  - chown -R ${user}:${group} ${install_dir}
+  - sudo systemctl daemon-reload
+  - sudo systemctl enable nexus.service
+  - sudo systemctl start nexus.service

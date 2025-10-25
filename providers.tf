@@ -42,9 +42,10 @@ provider "proxmox" {
   api_token = "${var.PROXMOX_USER}@pam!${var.PROXMOX_API_TOKEN_ID}=${var.PROXMOX_API_TOKEN_SECRET}"
 
   ssh {
-    agent       = false
-    username    = var.PROXMOX_USER
-    private_key = var.PROXMOX_PRIVATE_KEY_PATH
+    agent    = false
+    username = var.PROXMOX_USER
+    # private_key = var.PROXMOX_PRIVATE_KEY_PATH
+    private_key = file(pathexpand(var.PROXMOX_PRIVATE_KEY_PATH))
   }
 }
 

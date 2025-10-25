@@ -17,3 +17,18 @@ output "NGINX_CONTAINER_PASSWORD" {
   value     = random_password.nginx_container.result
   sensitive = true
 }
+
+output "NEXUS_VM_PASSWORD" {
+  value     = random_password.nexus_vm_password.result
+  sensitive = true
+}
+
+output "NEXUS_USER_PASSWORD" {
+  value     = random_password.nexus_user_password.result
+  sensitive = true
+}
+
+output "TEST_VM_PASSWORD" {
+  value     = random_password.test_vm_password.result
+  sensitive = true
+}

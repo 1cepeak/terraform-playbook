@@ -38,18 +38,6 @@ variable "PROXMOX_PRIVATE_KEY_PATH" {
 
 # Minio
 
-# variable "MINIO_ENDPOINT" {
-#   type        = string
-#   description = "MinIO endpoint url"
-#   default     = "http://192.168.3.100:9000"
-# }
-
-# variable "MINIO_SECRET_KEY" {
-#   type        = string
-#   description = "MinIO API secret key"
-#   sensitive   = true
-# }
-
 variable "MINIO_USER" {
   type        = string
   description = "MinIO root user"
